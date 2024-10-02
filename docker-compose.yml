@@ -1,0 +1,17 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.0.2-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Default port for RabbitMQ
+      - "15672:15672" # Default port for RabbitMQ Management Plugin
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - ./rabbitMQ/rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitMQ/config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
+volumes:
+  rabbitmq_data:
+    driver: local
