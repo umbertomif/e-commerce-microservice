@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: password
+
+orchestration:
+  exchange: orchestrationExchange
+
+logging:
+  level:
+    org:
+      springframework: INFO
+    com:
+      e_commerce: DEBUG

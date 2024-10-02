@@ -1,0 +1,13 @@
+### Create a new order
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "productId": "123456",
+  "quantity": 2,
+  "customerId": "customer001"
+}
+
+### Compensate an existing order (Replace {orderId} with the actual orderId)
+POST http://localhost:8080/api/orders/compensate/8e8440f4-f533-4bf8-b9f0-f2943d482c49
+Content-Type: application/json
