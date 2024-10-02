@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class PaymentServiceImpl implements PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
+
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${orchestration.exchange}")

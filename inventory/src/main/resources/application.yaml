@@ -1,0 +1,23 @@
+server:
+  port: 8085
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: password
+
+inventory:
+  queue:
+    updateRequested: inventoryUpdateRequestedQueue
+
+orchestration:
+  exchange: orchestrationExchange
+
+logging:
+  level:
+    org:
+      springframework: INFO
+    com:
+      e_commerce: DEBUG
