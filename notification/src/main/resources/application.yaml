@@ -1,12 +1,12 @@
 server:
-  port: 8083
+  port: 8086
 
 spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: root
-    password: password
+    username: guest
+    password: guest
 
 notification:
   queue:

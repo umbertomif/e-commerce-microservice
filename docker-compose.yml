@@ -6,12 +6,101 @@ services:
       - "5672:5672"   # Default port for RabbitMQ
       - "15672:15672" # Default port for RabbitMQ Management Plugin
     environment:
-      RABBITMQ_DEFAULT_USER: root
-      RABBITMQ_DEFAULT_PASS: password
-    volumes:
-      - ./rabbitMQ/rabbitmq_data:/var/lib/rabbitmq
-      - ./rabbitMQ/config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
-volumes:
-  rabbitmq_data:
-    driver: local
+  order:
+    image: order
+    container_name: order
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+  orchestration:
+    image: orchestration
+    container_name: orchestration
+    build:
+      context: ./orchestration
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+  payment:
+    image: payment
+    container_name: payment
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+  inventory:
+    image: inventory
+    container_name: inventory
+    build:
+      context: ./inventory
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+  shipping:
+    image: shipping
+    container_name: shipping
+    build:
+      context: ./shipping
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+  notification:
+    image: notification
+    container_name: notification
+    build:
+      context: ./notification
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest

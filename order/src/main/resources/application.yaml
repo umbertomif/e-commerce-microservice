@@ -1,12 +1,12 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: root
-    password: password
+    username: guest
+    password: guest
 
 orchestration:
   exchange: orchestrationExchange
