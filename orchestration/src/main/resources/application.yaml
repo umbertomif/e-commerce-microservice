@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: password
+
+orchestration:
+  queue:
+    orderCreated: orderCreatedQueue
+    paymentProcessed: paymentProcessedQueue
+    inventoryUpdated: inventoryUpdatedQueue
+    orderShipped: orderShippedQueue
+
+notification:
+  exchange: notificationExchange
+
+logging:
+  level:
+    org:
+      springframework: INFO
+    com:
+      e_commerce: DEBUG
