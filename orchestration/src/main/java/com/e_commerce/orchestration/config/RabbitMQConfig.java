@@ -16,7 +16,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue orderCreatedQueue() {
-        return new Queue("orderCreatedQueue", true); // Fila durável
+        return new Queue("orderCreatedQueue", true);
     }
 
     @Bean
@@ -36,12 +36,12 @@ public class RabbitMQConfig {
 
     @Bean
     public TopicExchange orchestrationExchange() {
-        return new TopicExchange("orchestrationExchange", true, false); // Exchange durável
+        return new TopicExchange("orchestrationExchange", true, false);
     }
 
     @Bean
     public TopicExchange notificationExchange() {
-        return new TopicExchange("notificationExchange", true, false); // Exchange para notificações
+        return new TopicExchange("notificationExchange", true, false);
     }
 
     @Bean

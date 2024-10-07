@@ -10,6 +10,13 @@ rabbitmq_data/
 # DS_Store files
 .DS_Store
 
+# Jmeter files
+jmeter/*.csv
+jmeter/*/*
+
+# Grafa files
+*.db
+
 # BlueJ files
 *.ctxt
 

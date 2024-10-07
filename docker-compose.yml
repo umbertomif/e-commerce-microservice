@@ -1,106 +1,181 @@
 services:
-  rabbitmq:
-    image: rabbitmq:4.0.2-management-alpine
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"   # Default port for RabbitMQ
-      - "15672:15672" # Default port for RabbitMQ Management Plugin
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+    rabbitmq:
+        image: rabbitmq:4.0.2-management-alpine
+        container_name: rabbitmq
+        ports:
+            - "5672:5672" # Default port for RabbitMQ
+            - "15672:15672" # Default port for RabbitMQ Management Plugin
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        volumes:
+            - ./rabbitMQ/rabbitmq_data:/var/lib/rabbitmq/mnesia
+        deploy:
+            resources:
+                limits:
+                    cpus: "4"
+                    memory: 8G
+                reservations:
+                    cpus: "2"
+                    memory: 4G
+        networks:
+            - my-network
 
-  order:
-    image: order
-    container_name: order
-    build:
-      context: ./order
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    order:
+        image: order
+        container_name: order
+        build:
+            context: ./order
+            dockerfile: Dockerfile
+        ports:
+            - "8081:8081"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
 
-  orchestration:
-    image: orchestration
-    container_name: orchestration
-    build:
-      context: ./orchestration
-      dockerfile: Dockerfile
-    ports:
-      - "8082:8082"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    orchestration:
+        image: orchestration
+        container_name: orchestration
+        build:
+            context: ./orchestration
+            dockerfile: Dockerfile
+        ports:
+            - "8082:8082"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
 
-  payment:
-    image: payment
-    container_name: payment
-    build:
-      context: ./payment
-      dockerfile: Dockerfile
-    ports:
-      - "8083:8083"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    payment:
+        image: payment
+        container_name: payment
+        build:
+            context: ./payment
+            dockerfile: Dockerfile
+        ports:
+            - "8083:8083"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
 
-  inventory:
-    image: inventory
-    container_name: inventory
-    build:
-      context: ./inventory
-      dockerfile: Dockerfile
-    ports:
-      - "8084:8084"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    inventory:
+        image: inventory
+        container_name: inventory
+        build:
+            context: ./inventory
+            dockerfile: Dockerfile
+        ports:
+            - "8084:8084"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
 
-  shipping:
-    image: shipping
-    container_name: shipping
-    build:
-      context: ./shipping
-      dockerfile: Dockerfile
-    ports:
-      - "8085:8085"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    shipping:
+        image: shipping
+        container_name: shipping
+        build:
+            context: ./shipping
+            dockerfile: Dockerfile
+        ports:
+            - "8085:8085"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
 
-  notification:
-    image: notification
-    container_name: notification
-    build:
-      context: ./notification
-      dockerfile: Dockerfile
-    ports:
-      - "8086:8086"
-    depends_on:
-      - rabbitmq
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+    notification:
+        image: notification
+        container_name: notification
+        build:
+            context: ./notification
+            dockerfile: Dockerfile
+        ports:
+            - "8086:8086"
+        depends_on:
+            - rabbitmq
+        environment:
+            - SPRING_RABBITMQ_HOST=rabbitmq
+            - SPRING_RABBITMQ_PORT=5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: 4G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
+        networks:
+            - my-network
+
+networks:
+    my-network:

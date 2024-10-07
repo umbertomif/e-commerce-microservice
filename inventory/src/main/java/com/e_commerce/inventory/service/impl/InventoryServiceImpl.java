@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -20,11 +21,12 @@ public class InventoryServiceImpl implements InventoryService {
     @Value("${orchestration.exchange}")
     private String orchestrationExchange;
 
+    @Autowired
     public InventoryServiceImpl(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @RabbitListener(queues = "${inventory.queue.updateRequested}")
+    @RabbitListener(queues = "${inventory.queue.update-requested}")
     @Override
     public void updateInventory(InventoryUpdateRequestedEvent event) {
         logger.info("Received InventoryUpdateRequestedEvent for orderId: {}, productId: {}, quantity: {}",

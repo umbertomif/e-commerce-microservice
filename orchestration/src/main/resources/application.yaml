@@ -2,11 +2,18 @@ server:
   port: 8082
 
 spring:
+  application:
+    name:  orchestration-service
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
+    listener:
+      simple:
+        prefetch: 100
+        concurrency: 100
+        max-concurrency: 200
 
 orchestration:
   queue:
@@ -24,3 +31,9 @@ logging:
       springframework: INFO
     com:
       e_commerce: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

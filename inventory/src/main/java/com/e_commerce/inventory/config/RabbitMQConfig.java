@@ -23,12 +23,12 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue inventoryUpdateRequestedQueue() {
-        return new Queue(inventoryUpdateRequestedQueue, true); // Fila durável
+        return new Queue(inventoryUpdateRequestedQueue, true);
     }
 
     @Bean
     public TopicExchange orchestrationExchange() {
-        return new TopicExchange(orchestrationExchange, true, false); // Exchange durável
+        return new TopicExchange(orchestrationExchange, true, false);
     }
 
     @Bean
