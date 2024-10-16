@@ -25,10 +25,4 @@ public class OrderController {
         Order createdOrder = orderService.createOrder(orderDTO);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
-
-    @PostMapping("/compensate/{orderId}")
-    public ResponseEntity<String> compensateOrder(@PathVariable String orderId) {
-        orderService.compensateOrder(orderId);
-        return new ResponseEntity<>("Compensation initiated for order: " + orderId, HttpStatus.OK);
-    }
 }

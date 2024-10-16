@@ -45,18 +45,4 @@ public class OrderServiceImpl implements OrderService {
         // Return the created order
         return order;
     }
-
-    @Override
-    public void compensateOrder(String orderId) {
-        // Log the compensation process
-        logger.info("Compensation initiated for orderId: {}", orderId);
-        try {
-            // Send a compensation event to RabbitMQ
-            rabbitTemplate.convertAndSend("orchestrationExchange", "order.compensated", orderId);
-            logger.info("Compensation event sent for orderId: {}", orderId);
-        } catch (Exception e) {
-            // Log an error if there is a failure in sending the compensation message
-            logger.error("Error sending Compensation event for orderId: {}. Error: {}", orderId, e.getMessage());
-        }
-    }
 }
