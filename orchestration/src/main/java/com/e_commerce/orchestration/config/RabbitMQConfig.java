@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    // Queues
     @Bean
     public Queue orderCreatedQueue() {
         return new Queue("orderCreatedQueue", true);
@@ -39,6 +40,7 @@ public class RabbitMQConfig {
         return new TopicExchange("orchestrationExchange", true, false);
     }
 
+    // Exchanges
     @Bean
     public TopicExchange notificationExchange() {
         return new TopicExchange("notificationExchange", true, false);
@@ -49,6 +51,7 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(orderCreatedQueue()).to(orchestrationExchange()).with("order.created");
     }
 
+    // Bindings
     @Bean
     public Binding bindingPaymentProcessed() {
         return BindingBuilder.bind(paymentProcessedQueue()).to(orchestrationExchange()).with("payment.processed");

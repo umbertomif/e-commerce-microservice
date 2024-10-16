@@ -41,8 +41,6 @@ public class OrchestrationServiceImpl implements OrchestrationService {
             // Send Failed Notification
             OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), false);
             rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
-            // Compensate Order
-            compensateOrder(event.getOrderId());
         }
     }
 
@@ -62,8 +60,6 @@ public class OrchestrationServiceImpl implements OrchestrationService {
             // Send Failed Notification
             PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), false);
             rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
-            // Compensate Order
-            compensateOrder(event.getOrderId());
         }
     }
 
@@ -83,8 +79,6 @@ public class OrchestrationServiceImpl implements OrchestrationService {
             // Send Failed Notification
             InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(), false);
             rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
-            // Compensate Order
-            compensateOrder(event.getOrderId());
         }
     }
 
@@ -101,17 +95,10 @@ public class OrchestrationServiceImpl implements OrchestrationService {
             // Send Failed Notification
             OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), false);
             rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
-            // Compensate Order
-            compensateOrder(event.getOrderId());
         }
     }
 
     private double calculateAmount(OrderCreatedEvent event) {
         return event.getQuantity() * 100.0;
-    }
-
-    private void compensateOrder(String orderId) {
-        logger.info("Compensating order: {}", orderId);
-        rabbitTemplate.convertAndSend("orchestrationExchange", "order.compensated", orderId);
     }
 }

@@ -6,6 +6,4 @@ import com.e_commerce.order.model.Order;
 public interface OrderService {
 
     Order createOrder(OrderDTO orderDTO);
-
-    void compensateOrder(String orderId);
 }

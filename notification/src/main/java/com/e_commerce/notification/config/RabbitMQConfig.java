@@ -19,6 +19,7 @@ public class RabbitMQConfig {
         return new Queue("orderCreatedNotificationQueue", true); // Fila durável
     }
 
+    // Queues
     @Bean
     public Queue paymentProcessedNotificationQueue() {
         return new Queue("paymentProcessedNotificationQueue", true);
@@ -34,11 +35,13 @@ public class RabbitMQConfig {
         return new Queue("orderShippedNotificationQueue", true);
     }
 
+    // Exchange
     @Bean
     public TopicExchange notificationExchange() {
         return new TopicExchange("notificationExchange", true, false); // Exchange durável
     }
 
+    // Bindings
     @Bean
     public Binding bindingOrderCreatedNotification() {
         return BindingBuilder.bind(orderCreatedNotificationQueue()).to(notificationExchange()).with("order.created.notification");
