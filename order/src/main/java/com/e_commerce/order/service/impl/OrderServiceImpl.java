@@ -33,14 +33,14 @@ public class OrderServiceImpl implements OrderService {
         // Log the order creation
         logger.info("Order created: {}", order);
         // Create an OrderCreatedEvent to send to RabbitMQ
-        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(orderId, orderDTO.getProductId(), orderDTO.getQuantity(), orderDTO.getCustomerId(), true);
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(orderId, orderDTO.getCustomerId(), orderDTO.getProductId(), orderDTO.getQuantity(), true);
         try {
             // Send the event to the orchestration exchange with the appropriate routing key
             rabbitTemplate.convertAndSend("orchestrationExchange", "order.created", orderCreatedEvent);
-            logger.info("OrderCreated event sent for orderId: {}", orderId);
+            logger.info("OrderCreated event sent for orderId: {}, customerId: {}", orderId, orderDTO.getCustomerId());
         } catch (Exception e) {
             // Log an error if there is a failure in sending the message
-            logger.error("Error sending OrderCreated event for orderId: {}. Error: {}", orderId, e.getMessage());
+            logger.error("Error sending OrderCreated event for orderId: {}, customerId: {}. Error: {}", orderId, orderDTO.getCustomerId(), e.getMessage());
         }
         // Return the created order
         return order;

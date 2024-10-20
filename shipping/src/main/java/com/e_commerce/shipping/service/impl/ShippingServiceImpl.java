@@ -29,16 +29,16 @@ public class ShippingServiceImpl implements ShippingService {
     @Override
     @RabbitListener(queues = "${shipping.queue.requested}")
     public void processShipping(ShippingRequestedEvent event) {
-        logger.info("Received ShippingRequestedEvent for orderId: {}", event.getOrderId());
+        logger.info("Received ShippingRequestedEvent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         // Simulate Shipping Process
         boolean shippingSuccessful = simulateShippingProcess(event.getOrderId());
         // Send to Orchestration Service
-        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(event.getOrderId(), shippingSuccessful);
+        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(event.getOrderId(), event.getCustomerId(), shippingSuccessful);
         rabbitTemplate.convertAndSend(orchestrationExchange, "order.shipped", orderShippedEvent);
         if (shippingSuccessful) {
-            logger.info("Order shipped successfully for orderId: {}", event.getOrderId());
+            logger.info("Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
-            logger.error("Order shipping failed for orderId: {}", event.getOrderId());
+            logger.error("Order shipping failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
     }
 

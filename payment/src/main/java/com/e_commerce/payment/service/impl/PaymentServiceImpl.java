@@ -29,14 +29,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @RabbitListener(queues = "${payment.queue.requested}")
     public void processPayment(PaymentRequestedEvent event) {
-        logger.info("Received PaymentRequestedEvent for orderId: {}", event.getOrderId());
+        logger.info("Received PaymentRequestedEvent for orderId: {}, customerId: {}, productId: {}, quantity; {}, amount: {}", event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), event.getAmount());
         // Simulate the Payment processed
         boolean paymentSuccessful = simulatePaymentProcess(event.getAmount());
         // Send to Orchestration Service
-        PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(event.getOrderId(), paymentSuccessful);
+        PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), paymentSuccessful);
         rabbitTemplate.convertAndSend(orchestrationExchange, "payment.processed", paymentProcessedEvent);
         if (paymentSuccessful) {
-            logger.info("Payment processed successfully for orderId: {}", event.getOrderId());
+            logger.info("Payment processed successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
             logger.error("Payment failed for orderId: {}", event.getOrderId());
         }

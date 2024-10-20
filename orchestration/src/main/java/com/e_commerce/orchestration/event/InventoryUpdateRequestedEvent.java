@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InventoryUpdateRequestedEvent {
     private String orderId;
+    private String customerId;
     private String productId;
     private int quantity;
     private boolean success;

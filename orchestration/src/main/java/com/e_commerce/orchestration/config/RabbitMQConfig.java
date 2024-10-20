@@ -16,9 +16,7 @@ public class RabbitMQConfig {
 
     // Queues
     @Bean
-    public Queue orderCreatedQueue() {
-        return new Queue("orderCreatedQueue", true);
-    }
+    public Queue orderCreatedQueue() { return new Queue("orderCreatedQueue", true); }
 
     @Bean
     public Queue paymentProcessedQueue() {
@@ -35,23 +33,23 @@ public class RabbitMQConfig {
         return new Queue("orderShippedQueue", true);
     }
 
+    // Exchanges
     @Bean
     public TopicExchange orchestrationExchange() {
         return new TopicExchange("orchestrationExchange", true, false);
     }
 
-    // Exchanges
     @Bean
     public TopicExchange notificationExchange() {
         return new TopicExchange("notificationExchange", true, false);
     }
 
+    // Bindings
     @Bean
     public Binding bindingOrderCreated() {
         return BindingBuilder.bind(orderCreatedQueue()).to(orchestrationExchange()).with("order.created");
     }
 
-    // Bindings
     @Bean
     public Binding bindingPaymentProcessed() {
         return BindingBuilder.bind(paymentProcessedQueue()).to(orchestrationExchange()).with("payment.processed");

@@ -15,36 +15,36 @@ public class NotificationServiceImpl implements NotificationService {
     @RabbitListener(queues = "${notification.queue.orderCreated}")
     public void handleOrderCreatedNotificationEvent(OrderCreatedNotificationEvent event) {
         if (event.isSuccess()) {
-            logger.info("Order Created Notification sent for orderId: {}", event.getOrderId());
+            logger.info("Order Created Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
-            logger.error("Order Creation Failed Notification sent for orderId: {}", event.getOrderId());
+            logger.error("Order Creation Failed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
     }
 
     @RabbitListener(queues = "${notification.queue.paymentProcessed}")
     public void handlePaymentProcessedNotificationEvent(PaymentProcessedNotificationEvent event) {
         if (event.isSuccess()) {
-            logger.info("Payment Processed Notification sent for orderId: {}", event.getOrderId());
+            logger.info("Payment Processed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
-            logger.error("Payment Failed Notification sent for orderId: {}", event.getOrderId());
+            logger.error("Payment Failed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
     }
 
     @RabbitListener(queues = "${notification.queue.inventoryUpdated}")
     public void handleInventoryUpdatedNotificationEvent(InventoryUpdatedNotificationEvent event) {
         if (event.isSuccess()) {
-            logger.info("Inventory Updated Notification sent for orderId: {}", event.getOrderId());
+            logger.info("Inventory Updated Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
-            logger.error("Inventory Update Failed Notification sent for orderId: {}", event.getOrderId());
+            logger.error("Inventory Update Failed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
     }
 
     @RabbitListener(queues = "${notification.queue.orderShipped}")
     public void handleOrderShippedNotificationEvent(OrderShippedNotificationEvent event) {
         if (event.isSuccess()) {
-            logger.info("Order Shipped Notification sent for orderId: {}", event.getOrderId());
+            logger.info("Order Shipped Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
-            logger.error("Order Shipping Failed Notification sent for orderId: {}", event.getOrderId());
+            logger.error("Order Shipping Failed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
     }
 }
