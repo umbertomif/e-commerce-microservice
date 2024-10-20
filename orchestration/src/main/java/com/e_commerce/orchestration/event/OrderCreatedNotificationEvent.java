@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderCreatedNotificationEvent {
     private String orderId;
+    private String customerId;
     private boolean success;
 }

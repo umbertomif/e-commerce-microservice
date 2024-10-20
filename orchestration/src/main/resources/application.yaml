@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name:  orchestration-service
+    name: orchestration-service
   rabbitmq:
     host: localhost
     port: 5672
@@ -16,6 +16,7 @@ spring:
         max-concurrency: 200
 
 orchestration:
+  exchange: orchestrationExchange
   queue:
     orderCreated: orderCreatedQueue
     paymentProcessed: paymentProcessedQueue
@@ -27,10 +28,8 @@ notification:
 
 logging:
   level:
-    org:
-      springframework: INFO
-    com:
-      e_commerce: DEBUG
+    org.springframework: INFO
+    com.e_commerce: DEBUG
 
 management:
   endpoints:

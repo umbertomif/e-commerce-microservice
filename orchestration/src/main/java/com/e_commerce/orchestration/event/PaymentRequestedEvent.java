@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentRequestedEvent {
     private String orderId;
+    private String customerId;
+    private String productId;
+    private int quantity;
     private double amount;
     private boolean success;
 }

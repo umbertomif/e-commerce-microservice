@@ -29,73 +29,117 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     @RabbitListener(queues = "${orchestration.queue.orderCreated}")
     public void handleOrderCreatedEvent(OrderCreatedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Handling OrderCreatedEvent for orderId: {}", event.getOrderId());
+            logger.info("Handling OrderCreatedEvent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
-            OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), true);
-            rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
+            sendOrderCreatedNotification(event);
             // Trigger the Payment request
-            PaymentRequestedEvent paymentEvent = new PaymentRequestedEvent(event.getOrderId(), calculateAmount(event), true);
-            rabbitTemplate.convertAndSend("orchestrationExchange", "payment.requested", paymentEvent);
+            triggerPaymentRequest(event);
         } else {
-            logger.error("Order failed for orderId: {}", event.getOrderId());
+            logger.error("Order failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Failed Notification
-            OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), false);
-            rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
+            sendOrderFailedNotification(event);
         }
+    }
+
+    private void sendOrderCreatedNotification(OrderCreatedEvent event) {
+        OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), event.getCustomerId(),true);
+        rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
+    }
+
+    private void triggerPaymentRequest(OrderCreatedEvent event) {
+        PaymentRequestedEvent paymentEvent = new PaymentRequestedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), calculateAmount(event), true);
+        rabbitTemplate.convertAndSend("orchestrationExchange", "payment.requested", paymentEvent);
+    }
+
+    private void sendOrderFailedNotification(OrderCreatedEvent event) {
+        OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
     }
 
     @Override
     @RabbitListener(queues = "${orchestration.queue.paymentProcessed}")
     public void handlePaymentProcessedEvent(PaymentProcessedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Payment processed successfully for orderId: {}", event.getOrderId());
+            logger.info("Payment processed successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
-            PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), true);
-            rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
+            sendPaymentProcessedNotification(event);
             // Trigger Update Inventory request
-            InventoryUpdateRequestedEvent inventoryEvent = new InventoryUpdateRequestedEvent(event.getOrderId(), "someProductId", 10, true);
-            rabbitTemplate.convertAndSend("orchestrationExchange", "inventory.updateRequested", inventoryEvent);
+            triggerInventoryUpdate(event);
         } else {
-            logger.error("Payment failed for orderId: {}", event.getOrderId());
+            logger.error("Payment failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Failed Notification
-            PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), false);
-            rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
+            sendPaymentFailedNotification(event);
         }
+    }
+
+    private void sendPaymentProcessedNotification(PaymentProcessedEvent event) {
+        PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
+    }
+
+    private void triggerInventoryUpdate(PaymentProcessedEvent event) {
+        InventoryUpdateRequestedEvent inventoryEvent = new InventoryUpdateRequestedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), true);
+        rabbitTemplate.convertAndSend("orchestrationExchange", "inventory.updateRequested", inventoryEvent);
+    }
+
+    private void sendPaymentFailedNotification(PaymentProcessedEvent event) {
+        PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
     }
 
     @Override
     @RabbitListener(queues = "${orchestration.queue.inventoryUpdated}")
     public void handleInventoryUpdatedEvent(InventoryUpdatedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Inventory updated successfully for orderId: {}", event.getOrderId());
+            logger.info("Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
-            InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(), true);
-            rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
+            sendInventoryUpdatedNotification(event);
             // Trigger Shipping request
-            ShippingRequestedEvent shippingEvent = new ShippingRequestedEvent(event.getOrderId(), true);
-            rabbitTemplate.convertAndSend("orchestrationExchange", "shipping.requested", shippingEvent);
+            triggerShippingRequest(event);
         } else {
-            logger.error("Inventory update failed for orderId: {}", event.getOrderId());
+            logger.error("Inventory update failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Failed Notification
-            InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(), false);
-            rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
+            sendInventoryUpdateFailedNotification(event);
         }
+    }
+
+    private void sendInventoryUpdatedNotification(InventoryUpdatedEvent event) {
+        InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(),event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
+    }
+
+    private void triggerShippingRequest(InventoryUpdatedEvent event) {
+        ShippingRequestedEvent shippingEvent = new ShippingRequestedEvent(event.getOrderId(), event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend("orchestrationExchange", "shipping.requested", shippingEvent);
+    }
+
+    private void sendInventoryUpdateFailedNotification(InventoryUpdatedEvent event) {
+        InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
     }
 
     @Override
     @RabbitListener(queues = "${orchestration.queue.orderShipped}")
     public void handleOrderShippedEvent(OrderShippedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Order shipped successfully for orderId: {}", event.getOrderId());
+            logger.info("Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
-            OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), true);
-            rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
+            sendOrderShippedNotification(event);
         } else {
-            logger.error("Order shipping failed for orderId: {}", event.getOrderId());
+            logger.error("Order shipping failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Failed Notification
-            OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), false);
-            rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
+            sendOrderShippedFailedNotification(event);
         }
+    }
+
+    private void sendOrderShippedNotification(OrderShippedEvent event) {
+        OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
+    }
+
+    private void sendOrderShippedFailedNotification(OrderShippedEvent event) {
+        OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
     }
 
     private double calculateAmount(OrderCreatedEvent event) {
