@@ -13,11 +13,11 @@ services:
         deploy:
             resources:
                 limits:
-                    cpus: "4"
-                    memory: 8G
-                reservations:
                     cpus: "2"
-                    memory: 4G
+                    memory: 3G
+                reservations:
+                    cpus: "1"
+                    memory: 2G
         networks:
             - my-network
 
@@ -40,10 +40,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 
@@ -66,10 +66,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 
@@ -92,10 +92,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 
@@ -118,10 +118,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 
@@ -144,10 +144,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 
@@ -170,10 +170,10 @@ services:
             resources:
                 limits:
                     cpus: "1"
-                    memory: 4G
-                reservations:
-                    cpus: "1"
                     memory: 2G
+                reservations:
+                    cpus: "0.5"
+                    memory: 1G
         networks:
             - my-network
 

@@ -8,37 +8,53 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    @Bean
-    public Queue orderCreatedNotificationQueue() {
-        return new Queue("orderCreatedNotificationQueue", true); // Fila durável
-    }
+    @Value("${notification.queue.orderCreated}")
+    private String orderCreatedNotificationQueue;
+
+    @Value("${notification.queue.paymentProcessed}")
+    private String paymentProcessedNotificationQueue;
+
+    @Value("${notification.queue.inventoryUpdated}")
+    private String inventoryUpdatedNotificationQueue;
+
+    @Value("${notification.queue.orderShipped}")
+    private String orderShippedNotificationQueue;
+
+    @Value("${notification.exchange}")
+    private String notificationExchange;
 
     // Queues
     @Bean
+    public Queue orderCreatedNotificationQueue() {
+        return new Queue(orderCreatedNotificationQueue, true);
+    }
+
+    @Bean
     public Queue paymentProcessedNotificationQueue() {
-        return new Queue("paymentProcessedNotificationQueue", true);
+        return new Queue(paymentProcessedNotificationQueue, true);
     }
 
     @Bean
     public Queue inventoryUpdatedNotificationQueue() {
-        return new Queue("inventoryUpdatedNotificationQueue", true);
+        return new Queue(inventoryUpdatedNotificationQueue, true);
     }
 
     @Bean
     public Queue orderShippedNotificationQueue() {
-        return new Queue("orderShippedNotificationQueue", true);
+        return new Queue(orderShippedNotificationQueue, true);
     }
 
     // Exchange
     @Bean
     public TopicExchange notificationExchange() {
-        return new TopicExchange("notificationExchange", true, false); // Exchange durável
+        return new TopicExchange(notificationExchange, true, false);
     }
 
     // Bindings

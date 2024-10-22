@@ -6,6 +6,7 @@ import com.e_commerce.order.event.OrderCreatedEvent;
 import com.e_commerce.order.service.OrderService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,9 @@ public class OrderServiceImpl implements OrderService {
 
     private final RabbitTemplate rabbitTemplate;
 
+    @Value("${orchestration.exchange}")
+    private String orchestrationExchange;
+
     @Autowired
     public OrderServiceImpl(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -29,14 +33,14 @@ public class OrderServiceImpl implements OrderService {
         // Generate a unique order ID
         String orderId = UUID.randomUUID().toString();
         // Create a new order
-        Order order = new Order(orderId, "Created", orderDTO.getProductId(), orderDTO.getQuantity(), orderDTO.getCustomerId());
+        Order order = new Order(orderId, orderDTO.getCustomerId(), "Created", orderDTO.getProductId(), orderDTO.getQuantity());
         // Log the order creation
         logger.info("Order created: {}", order);
         // Create an OrderCreatedEvent to send to RabbitMQ
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(orderId, orderDTO.getCustomerId(), orderDTO.getProductId(), orderDTO.getQuantity(), true);
         try {
             // Send the event to the orchestration exchange with the appropriate routing key
-            rabbitTemplate.convertAndSend("orchestrationExchange", "order.created", orderCreatedEvent);
+            rabbitTemplate.convertAndSend(orchestrationExchange, "order.created", orderCreatedEvent);
             logger.info("OrderCreated event sent for orderId: {}, customerId: {}", orderId, orderDTO.getCustomerId());
         } catch (Exception e) {
             // Log an error if there is a failure in sending the message

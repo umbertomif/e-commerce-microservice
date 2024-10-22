@@ -17,6 +17,9 @@ public class OrchestrationServiceImpl implements OrchestrationService {
 
     private final RabbitTemplate rabbitTemplate;
 
+    @Value("${orchestration.exchange}")
+    private String orchestrationExchange;
+
     @Value("${notification.exchange}")
     private String notificationExchange;
 
@@ -48,7 +51,12 @@ public class OrchestrationServiceImpl implements OrchestrationService {
 
     private void triggerPaymentRequest(OrderCreatedEvent event) {
         PaymentRequestedEvent paymentEvent = new PaymentRequestedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), calculateAmount(event), true);
-        rabbitTemplate.convertAndSend("orchestrationExchange", "payment.requested", paymentEvent);
+        logger.info("Trigger Payment Requested event: {}", paymentEvent);
+        rabbitTemplate.convertAndSend(orchestrationExchange, "payment.requested", paymentEvent);
+    }
+
+    private double calculateAmount(OrderCreatedEvent event) {
+        return event.getQuantity() * 100.0;
     }
 
     private void sendOrderFailedNotification(OrderCreatedEvent event) {
@@ -60,7 +68,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     @RabbitListener(queues = "${orchestration.queue.paymentProcessed}")
     public void handlePaymentProcessedEvent(PaymentProcessedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Payment processed successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
+            logger.info("Handling Payment processed successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
             sendPaymentProcessedNotification(event);
             // Trigger Update Inventory request
@@ -79,7 +87,8 @@ public class OrchestrationServiceImpl implements OrchestrationService {
 
     private void triggerInventoryUpdate(PaymentProcessedEvent event) {
         InventoryUpdateRequestedEvent inventoryEvent = new InventoryUpdateRequestedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), true);
-        rabbitTemplate.convertAndSend("orchestrationExchange", "inventory.updateRequested", inventoryEvent);
+        logger.info("Trigger Inventory Update Requested event: {}", inventoryEvent);
+        rabbitTemplate.convertAndSend(orchestrationExchange, "inventory.updateRequested", inventoryEvent);
     }
 
     private void sendPaymentFailedNotification(PaymentProcessedEvent event) {
@@ -91,7 +100,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     @RabbitListener(queues = "${orchestration.queue.inventoryUpdated}")
     public void handleInventoryUpdatedEvent(InventoryUpdatedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
+            logger.info("Handling Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
             sendInventoryUpdatedNotification(event);
             // Trigger Shipping request
@@ -110,7 +119,8 @@ public class OrchestrationServiceImpl implements OrchestrationService {
 
     private void triggerShippingRequest(InventoryUpdatedEvent event) {
         ShippingRequestedEvent shippingEvent = new ShippingRequestedEvent(event.getOrderId(), event.getCustomerId(), true);
-        rabbitTemplate.convertAndSend("orchestrationExchange", "shipping.requested", shippingEvent);
+        logger.info("Trigger Shipping Requested event: {}", shippingEvent);
+        rabbitTemplate.convertAndSend(orchestrationExchange, "shipping.requested", shippingEvent);
     }
 
     private void sendInventoryUpdateFailedNotification(InventoryUpdatedEvent event) {
@@ -122,7 +132,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     @RabbitListener(queues = "${orchestration.queue.orderShipped}")
     public void handleOrderShippedEvent(OrderShippedEvent event) {
         if (event.isSuccess()) {
-            logger.info("Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
+            logger.info("Handling Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
             // Send Notification
             sendOrderShippedNotification(event);
         } else {
@@ -140,9 +150,5 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     private void sendOrderShippedFailedNotification(OrderShippedEvent event) {
         OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
         rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
-    }
-
-    private double calculateAmount(OrderCreatedEvent event) {
-        return event.getQuantity() * 100.0;
     }
 }
