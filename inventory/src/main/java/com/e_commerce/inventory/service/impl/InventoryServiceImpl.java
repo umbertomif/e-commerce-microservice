@@ -26,17 +26,17 @@ public class InventoryServiceImpl implements InventoryService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @RabbitListener(queues = "${inventory.queue.update-requested}")
+    @RabbitListener(queues = "${inventory.queue.updateRequested}")
     @Override
     public void updateInventory(InventoryUpdateRequestedEvent event) {
         logger.info("Received InventoryUpdateRequestedEvent for orderId: {}, customerId: {}, productId: {}, quantity: {}",
                 event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity());
         // Simulate Inventory Update
         boolean updateSuccessful = simulateInventoryUpdate(event.getProductId(), event.getQuantity());
-        // Send to Orchestration Service
-        InventoryUpdatedEvent inventoryUpdatedEvent = new InventoryUpdatedEvent(event.getOrderId(), event.getCustomerId(), updateSuccessful);
-        rabbitTemplate.convertAndSend(orchestrationExchange, "inventory.updated", inventoryUpdatedEvent);
         if (updateSuccessful) {
+            // Send to Orchestration Service
+            InventoryUpdatedEvent inventoryUpdatedEvent = new InventoryUpdatedEvent(event.getOrderId(), event.getCustomerId(), updateSuccessful);
+            rabbitTemplate.convertAndSend(orchestrationExchange, "inventory.updated", inventoryUpdatedEvent);
             logger.info("Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
             logger.error("Inventory update failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());

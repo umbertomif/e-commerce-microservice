@@ -32,10 +32,10 @@ public class PaymentServiceImpl implements PaymentService {
         logger.info("Received PaymentRequestedEvent for orderId: {}, customerId: {}, productId: {}, quantity; {}, amount: {}", event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), event.getAmount());
         // Simulate the Payment processed
         boolean paymentSuccessful = simulatePaymentProcess(event.getAmount());
-        // Send to Orchestration Service
-        PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), paymentSuccessful);
-        rabbitTemplate.convertAndSend(orchestrationExchange, "payment.processed", paymentProcessedEvent);
         if (paymentSuccessful) {
+            // Send to Orchestration Service
+            PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(event.getOrderId(), event.getCustomerId(), event.getProductId(), event.getQuantity(), paymentSuccessful);
+            rabbitTemplate.convertAndSend(orchestrationExchange, "payment.processed", paymentProcessedEvent);
             logger.info("Payment processed successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
             logger.error("Payment failed for orderId: {}", event.getOrderId());

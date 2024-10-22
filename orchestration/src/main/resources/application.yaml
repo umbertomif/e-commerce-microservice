@@ -16,12 +16,12 @@ spring:
         max-concurrency: 200
 
 orchestration:
-  exchange: orchestrationExchange
   queue:
     orderCreated: orderCreatedQueue
     paymentProcessed: paymentProcessedQueue
     inventoryUpdated: inventoryUpdatedQueue
     orderShipped: orderShippedQueue
+  exchange: orchestrationExchange
 
 notification:
   exchange: notificationExchange
