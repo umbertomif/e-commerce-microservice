@@ -45,7 +45,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendOrderCreatedNotification(OrderCreatedEvent event) {
-        OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), event.getCustomerId(),true);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(),true);
         rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
     }
 
@@ -60,7 +60,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendOrderFailedNotification(OrderCreatedEvent event) {
-        OrderCreatedNotificationEvent notificationEvent = new OrderCreatedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), false);
         rabbitTemplate.convertAndSend(notificationExchange, "order.created.notification", notificationEvent);
     }
 
@@ -81,7 +81,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendPaymentProcessedNotification(PaymentProcessedEvent event) {
-        PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), event.getCustomerId(), true);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), true);
         rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
     }
 
@@ -92,7 +92,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendPaymentFailedNotification(PaymentProcessedEvent event) {
-        PaymentProcessedNotificationEvent notificationEvent = new PaymentProcessedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), false);
         rabbitTemplate.convertAndSend(notificationExchange, "payment.processed.notification", notificationEvent);
     }
 
@@ -113,7 +113,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendInventoryUpdatedNotification(InventoryUpdatedEvent event) {
-        InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(),event.getCustomerId(), true);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(),event.getCustomerId(), true);
         rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
     }
 
@@ -124,7 +124,7 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendInventoryUpdateFailedNotification(InventoryUpdatedEvent event) {
-        InventoryUpdatedNotificationEvent notificationEvent = new InventoryUpdatedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), false);
         rabbitTemplate.convertAndSend(notificationExchange, "inventory.updated.notification", notificationEvent);
     }
 
@@ -143,12 +143,12 @@ public class OrchestrationServiceImpl implements OrchestrationService {
     }
 
     private void sendOrderShippedNotification(OrderShippedEvent event) {
-        OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), event.getCustomerId(), true);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), true);
         rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
     }
 
     private void sendOrderShippedFailedNotification(OrderShippedEvent event) {
-        OrderShippedNotificationEvent notificationEvent = new OrderShippedNotificationEvent(event.getOrderId(), event.getCustomerId(), false);
+        NotificationEvent notificationEvent = new NotificationEvent(event.getOrderId(), event.getCustomerId(), false);
         rabbitTemplate.convertAndSend(notificationExchange, "order.shipped.notification", notificationEvent);
     }
 }

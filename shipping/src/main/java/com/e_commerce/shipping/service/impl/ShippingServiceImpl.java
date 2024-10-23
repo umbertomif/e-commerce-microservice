@@ -33,13 +33,16 @@ public class ShippingServiceImpl implements ShippingService {
         // Simulate Shipping Process
         boolean shippingSuccessful = simulateShippingProcess(event.getOrderId());
         if (shippingSuccessful) {
-            // Send to Orchestration Service
-            OrderShippedEvent orderShippedEvent = new OrderShippedEvent(event.getOrderId(), event.getCustomerId(), shippingSuccessful);
-            rabbitTemplate.convertAndSend(orchestrationExchange, "order.shipped", orderShippedEvent);
-            logger.info("Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
+            triggerOrderShipped(event);
         } else {
             logger.error("Order shipping failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
+    }
+
+    private void triggerOrderShipped(ShippingRequestedEvent event) {
+        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(event.getOrderId(), event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend(orchestrationExchange, "order.shipped", orderShippedEvent);
+        logger.info("Order shipped successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
     }
 
     private boolean simulateShippingProcess(String orderId) {

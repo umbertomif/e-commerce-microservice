@@ -13,7 +13,7 @@ public class NotificationServiceImpl implements NotificationService {
     private static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     @RabbitListener(queues = "${notification.queue.orderCreated}")
-    public void handleOrderCreatedNotificationEvent(OrderCreatedNotificationEvent event) {
+    public void handleOrderCreatedNotificationEvent(NotificationEvent event) {
         if (event.isSuccess()) {
             logger.info("Order Created Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
@@ -22,7 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @RabbitListener(queues = "${notification.queue.paymentProcessed}")
-    public void handlePaymentProcessedNotificationEvent(PaymentProcessedNotificationEvent event) {
+    public void handlePaymentProcessedNotificationEvent(NotificationEvent event) {
         if (event.isSuccess()) {
             logger.info("Payment Processed Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
@@ -31,7 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @RabbitListener(queues = "${notification.queue.inventoryUpdated}")
-    public void handleInventoryUpdatedNotificationEvent(InventoryUpdatedNotificationEvent event) {
+    public void handleInventoryUpdatedNotificationEvent(NotificationEvent event) {
         if (event.isSuccess()) {
             logger.info("Inventory Updated Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
@@ -40,7 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @RabbitListener(queues = "${notification.queue.orderShipped}")
-    public void handleOrderShippedNotificationEvent(OrderShippedNotificationEvent event) {
+    public void handleOrderShippedNotificationEvent(NotificationEvent event) {
         if (event.isSuccess()) {
             logger.info("Order Shipped Notification sent for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         } else {
