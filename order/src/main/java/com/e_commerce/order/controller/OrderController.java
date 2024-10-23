@@ -1,7 +1,7 @@
 package com.e_commerce.order.controller;
 
 import com.e_commerce.order.dto.OrderDTO;
-import com.e_commerce.order.model.Order;
+import com.e_commerce.order.event.OrderCreatedEvent;
 import com.e_commerce.order.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        Order createdOrder = orderService.createOrder(orderDTO);
-        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+    public ResponseEntity<Object> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderDTO));
     }
 }

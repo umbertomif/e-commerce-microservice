@@ -1,17 +1,14 @@
 package com.e_commerce.notification.service;
 
-import com.e_commerce.notification.event.InventoryUpdatedNotificationEvent;
-import com.e_commerce.notification.event.OrderCreatedNotificationEvent;
-import com.e_commerce.notification.event.OrderShippedNotificationEvent;
-import com.e_commerce.notification.event.PaymentProcessedNotificationEvent;
+import com.e_commerce.notification.event.NotificationEvent;
 
 public interface NotificationService {
 
-    void handleOrderCreatedNotificationEvent(OrderCreatedNotificationEvent event);
+    void handleOrderCreatedNotificationEvent(NotificationEvent event);
 
-    void handlePaymentProcessedNotificationEvent(PaymentProcessedNotificationEvent event);
+    void handlePaymentProcessedNotificationEvent(NotificationEvent event);
 
-    void handleInventoryUpdatedNotificationEvent(InventoryUpdatedNotificationEvent event);
+    void handleInventoryUpdatedNotificationEvent(NotificationEvent event);
 
-    void handleOrderShippedNotificationEvent(OrderShippedNotificationEvent event);
+    void handleOrderShippedNotificationEvent(NotificationEvent event);
 }

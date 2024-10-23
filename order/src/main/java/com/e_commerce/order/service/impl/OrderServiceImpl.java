@@ -1,7 +1,6 @@
 package com.e_commerce.order.service.impl;
 
 import com.e_commerce.order.dto.OrderDTO;
-import com.e_commerce.order.model.Order;
 import com.e_commerce.order.event.OrderCreatedEvent;
 import com.e_commerce.order.service.OrderService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -29,24 +28,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(OrderDTO orderDTO) {
+    public OrderCreatedEvent createOrder(OrderDTO orderDTO) {
         // Generate a unique order ID
         String orderId = UUID.randomUUID().toString();
-        // Create a new order
-        Order order = new Order(orderId, orderDTO.getCustomerId(), "Created", orderDTO.getProductId(), orderDTO.getQuantity());
-        // Log the order creation
-        logger.info("Order created: {}", order);
         // Create an OrderCreatedEvent to send to RabbitMQ
-        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(orderId, orderDTO.getCustomerId(), orderDTO.getProductId(), orderDTO.getQuantity(), true);
-        try {
-            // Send the event to the orchestration exchange with the appropriate routing key
-            rabbitTemplate.convertAndSend(orchestrationExchange, "order.created", orderCreatedEvent);
-            logger.info("OrderCreated event sent for orderId: {}, customerId: {}", orderId, orderDTO.getCustomerId());
-        } catch (Exception e) {
-            // Log an error if there is a failure in sending the message
-            logger.error("Error sending OrderCreated event for orderId: {}, customerId: {}. Error: {}", orderId, orderDTO.getCustomerId(), e.getMessage());
-        }
-        // Return the created order
-        return order;
+        OrderCreatedEvent event = new OrderCreatedEvent(orderId, orderDTO.getCustomerId(), orderDTO.getProductId(), orderDTO.getQuantity(), true);
+        // Trigger the Order Created Event
+        triggerOrderCreated(event);
+        // Return the OrderCreatedEvent
+        return event;
+    }
+
+    private void triggerOrderCreated(OrderCreatedEvent event) {
+        rabbitTemplate.convertAndSend(orchestrationExchange, "order.created", event);
+        logger.info("Order Created successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
     }
 }

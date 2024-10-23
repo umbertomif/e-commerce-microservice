@@ -34,13 +34,16 @@ public class InventoryServiceImpl implements InventoryService {
         // Simulate Inventory Update
         boolean updateSuccessful = simulateInventoryUpdate(event.getProductId(), event.getQuantity());
         if (updateSuccessful) {
-            // Send to Orchestration Service
-            InventoryUpdatedEvent inventoryUpdatedEvent = new InventoryUpdatedEvent(event.getOrderId(), event.getCustomerId(), updateSuccessful);
-            rabbitTemplate.convertAndSend(orchestrationExchange, "inventory.updated", inventoryUpdatedEvent);
-            logger.info("Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
+            triggerInventoryUpdate(event);
         } else {
             logger.error("Inventory update failed for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
         }
+    }
+
+    private void triggerInventoryUpdate(InventoryUpdateRequestedEvent event) {
+        InventoryUpdatedEvent inventoryUpdatedEvent = new InventoryUpdatedEvent(event.getOrderId(), event.getCustomerId(), true);
+        rabbitTemplate.convertAndSend(orchestrationExchange, "inventory.updated", inventoryUpdatedEvent);
+        logger.info("Inventory updated successfully for orderId: {}, customerId: {}", event.getOrderId(), event.getCustomerId());
     }
 
     private boolean simulateInventoryUpdate(String productId, int quantity) {

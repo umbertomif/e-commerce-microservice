@@ -35,7 +35,9 @@ public class RabbitMQConfig {
 
     // Queues
     @Bean
-    public Queue orderCreatedQueue() { return new Queue(orderCreatedQueue, true); }
+    public Queue orderCreatedQueue() {
+        return new Queue(orderCreatedQueue, true);
+    }
 
     @Bean
     public Queue paymentProcessedQueue() {
