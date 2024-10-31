@@ -6,8 +6,8 @@ services:
             - "5672:5672" # Default port for RabbitMQ
             - "15672:15672" # Default port for RabbitMQ Management Plugin
         environment:
-            RABBITMQ_DEFAULT_USER: guest
-            RABBITMQ_DEFAULT_PASS: guest
+            RABBITMQ_DEFAULT_USER: rabbitmq_user
+            RABBITMQ_DEFAULT_PASS: rabbitmq_123456
         volumes:
             - ./rabbitMQ/rabbitmq_data:/var/lib/rabbitmq/mnesia
         deploy:
@@ -34,8 +34,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
@@ -60,8 +60,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
@@ -86,8 +86,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
@@ -112,8 +112,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
@@ -138,8 +138,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
@@ -164,8 +164,8 @@ services:
         environment:
             - SPRING_RABBITMQ_HOST=rabbitmq
             - SPRING_RABBITMQ_PORT=5672
-            - SPRING_RABBITMQ_USERNAME=guest
-            - SPRING_RABBITMQ_PASSWORD=guest
+            - SPRING_RABBITMQ_USERNAME=rabbitmq_user
+            - SPRING_RABBITMQ_PASSWORD=rabbitmq_123456
         deploy:
             resources:
                 limits:
