@@ -11,8 +11,8 @@ rabbitmq_data/
 .DS_Store
 
 # Jmeter files
-jmeter/*.csv
-jmeter/*/*
+jmeter/report_*/*.csv
+jmeter/report_*/report
 
 # Grafa files
 *.db
